@@ -1,34 +1,28 @@
 @php
     $nav_links = [
         ['name'=>'Novedades',
-         'route'=> route('novedades'),
-         'active'=> request()->routeIs('novedades'),
-         'permission' => false,
+         'route'=> route('news.index'),
+         'active'=> request()->routeIs('news'),
         ],
         ['name'=>'Recibos',
-         'route'=>'#',
-         'active'=>false,
-         'permission' => false,
+         'route'=>route('recibos'),
+         'active'=>request()->routeIs('recibos'),
         ],
         ['name'=>'Documentacion',
-         'route'=>'#',
-         'active'=>false,
-         'permission' => false,
+         'route'=>route('documentacion'),
+         'active'=>request()->routeIs('documentacion'),
         ],
         ['name'=>'Licencias',
-         'route'=>'#',
-         'active'=>false,
-         'permission' => false,
+         'route'=>route('licencias'),
+         'active'=>request()->routeIs('licencias'),
         ],
         ['name'=>'RRHH',
-         'route'=>'#',
-         'active'=>false,
-         'permission' => false,
+         'route'=>route('rrhh'),
+         'active'=>request()->routeIs('rrhh'),
         ],
         ['name'=>'Administracion',
-         'route'=>'#',
-         'active'=>false,
-         'permission' => false,
+         'route'=>route('administracion'),
+         'active'=>request()->routeIs('administracion'),
         ]
     ];
 @endphp
@@ -47,8 +41,43 @@
                     @foreach ($nav_links as $nav_link)
 
                         @switch($nav_link['route'])
-                            @case(route('novedades'))
+                            @case(route('news.index'))
                                 @can('novedades.index')
+                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
+                                        {{ $nav_link['name'] }}
+                                    </x-jet-nav-link>
+                                @endcan
+                                @break
+                                @case(route('recibos'))
+                                @can('recibos.index')
+                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
+                                        {{ $nav_link['name'] }}
+                                    </x-jet-nav-link>
+                                @endcan
+                                @break
+                                @case(route('documentacion'))
+                                @can('documentacion.index')
+                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
+                                        {{ $nav_link['name'] }}
+                                    </x-jet-nav-link>
+                                @endcan
+                                @break
+                                @case(route('licencias'))
+                                @can('licencias.index')
+                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
+                                        {{ $nav_link['name'] }}
+                                    </x-jet-nav-link>
+                                @endcan
+                                @break
+                                @case(route('rrhh'))
+                                @can('rrhh.index')
+                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
+                                        {{ $nav_link['name'] }}
+                                    </x-jet-nav-link>
+                                @endcan
+                                @break
+                                @case(route('administracion'))
+                                @can('administracion.index')
                                     <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
                                         {{ $nav_link['name'] }}
                                     </x-jet-nav-link>
