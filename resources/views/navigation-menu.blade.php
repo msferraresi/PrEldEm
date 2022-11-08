@@ -5,8 +5,8 @@
          'active'=> request()->routeIs('news'),
         ],
         ['name'=>'Recibos',
-         'route'=>route('recibos'),
-         'active'=>request()->routeIs('recibos'),
+         'route'=>route('paychecks.index'),
+         'active'=>request()->routeIs('paychecks'),
         ],
         ['name'=>'Documentacion',
          'route'=>route('documentacion'),
@@ -26,6 +26,13 @@
         ]
     ];
 @endphp
+
+@php
+$classes = ($active ?? false)
+            ? 'inline-flex items-center px-1 pt-1 border-b-2 border-indigo-400 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition'
+            : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition';
+@endphp
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100 shadow">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,7 +46,6 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     @foreach ($nav_links as $nav_link)
-
                         @switch($nav_link['route'])
                             @case(route('news.index'))
                                 @can('novedades.index')
@@ -48,16 +54,20 @@
                                     </x-jet-nav-link>
                                 @endcan
                                 @break
-                                @case(route('recibos'))
+                                @case(route('paychecks.index'))
                                 @can('recibos.index')
-                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
-                                        {{ $nav_link['name'] }}
+                                    <x-jet-nav-link href="#" :active="$nav_link['active']">
+                                        <form method="post" action="{{ $nav_link['route'] }}">
+                                            @csrf
+                                            <input type="text" value="{{Auth::user()->id}}" hidden id="id" name="id">
+                                            <input type="submit" value="{{ $nav_link['name'] }}"/>
+                                        </form>
                                     </x-jet-nav-link>
                                 @endcan
                                 @break
                                 @case(route('documentacion'))
                                 @can('documentacion.index')
-                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
+                                    <x-jet-nav-link href="{{ $nav_link['route']  }}" :active="$nav_link['active']">
                                         {{ $nav_link['name'] }}
                                     </x-jet-nav-link>
                                 @endcan
