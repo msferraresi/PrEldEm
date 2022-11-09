@@ -15,7 +15,7 @@ class NewsController extends Controller
 
     public function create()
     {
-        return view('news.create');
+        return view('rrhh.news.create');
     }
 
     public function store(Request $request)
@@ -26,7 +26,7 @@ class NewsController extends Controller
             'description' => $request['description'],
         ]);
 
-        return redirect()->route('news.index');
+        return redirect()->route('rrhh.index_news');
     }
 
     public function show(News $news)
@@ -36,7 +36,7 @@ class NewsController extends Controller
 
     public function edit(News $news)
     {
-        return view('news.edit', compact('news'));
+        return view('rrhh.news.edit', compact('news'));
     }
 
     public function update(Request $request, News $news)
@@ -46,13 +46,13 @@ class NewsController extends Controller
             'description' => $request['description'],
         ]);
 
-        return redirect()->route('news.index');
+        return redirect()->route('rrhh.index_news');
     }
 
     public function destroy(News $news)
     {
         $news->delete();
 
-        return redirect()->route('news.index');
+        return redirect()->route('rrhh.index_news');
     }
 }

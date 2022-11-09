@@ -17,7 +17,7 @@
          'active'=>request()->routeIs('licencias'),
         ],
         ['name'=>'RRHH',
-         'route'=>route('rrhh'),
+         'route'=>route('rrhh.index'),
          'active'=>request()->routeIs('rrhh'),
         ],
         ['name'=>'Administracion',
@@ -72,14 +72,7 @@ $classes = ($active ?? false)
                                     </x-jet-nav-link>
                                 @endcan
                                 @break
-                                @case(route('licencias'))
-                                @can('licencias.index')
-                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
-                                        {{ $nav_link['name'] }}
-                                    </x-jet-nav-link>
-                                @endcan
-                                @break
-                                @case(route('rrhh'))
+                                @case(route('rrhh.index'))
                                 @can('rrhh.index')
                                     <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
                                         {{ $nav_link['name'] }}
