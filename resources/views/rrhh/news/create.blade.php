@@ -4,7 +4,7 @@
             Crear Noticia
         </h2>
     </x-slot>
-    @can('novedades.create')
+    @can('news.create')
         <div class="max-w-10xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

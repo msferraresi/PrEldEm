@@ -48,14 +48,14 @@ $classes = ($active ?? false)
                     @foreach ($nav_links as $nav_link)
                         @switch($nav_link['route'])
                             @case(route('news.index'))
-                                @can('novedades.index')
+                                @can('news.index')
                                     <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
                                         {{ $nav_link['name'] }}
                                     </x-jet-nav-link>
                                 @endcan
                                 @break
                                 @case(route('paychecks.index'))
-                                @can('recibos.index')
+                                @can('paychecks.index')
                                     <x-jet-nav-link href="#" :active="$nav_link['active']">
                                         <form method="post" action="{{ $nav_link['route'] }}">
                                             @csrf
@@ -66,7 +66,7 @@ $classes = ($active ?? false)
                                 @endcan
                                 @break
                                 @case(route('documentacion'))
-                                @can('documentacion.index')
+                                @can('documents.index')
                                     <x-jet-nav-link href="{{ $nav_link['route']  }}" :active="$nav_link['active']">
                                         {{ $nav_link['name'] }}
                                     </x-jet-nav-link>
@@ -80,7 +80,7 @@ $classes = ($active ?? false)
                                 @endcan
                                 @break
                                 @case(route('administracion'))
-                                @can('administracion.index')
+                                @can('administration.index')
                                     <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']">
                                         {{ $nav_link['name'] }}
                                     </x-jet-nav-link>
