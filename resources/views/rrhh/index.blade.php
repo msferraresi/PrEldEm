@@ -18,6 +18,7 @@
                                         @csrf
                                         <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
                                         <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                        <input type="text" value="0" hidden id="area_id" name="area_id">
                                         <a href="{{ route('rrhh.index_news') }}" @click.prevent="$root.submit();">Gestion Novedades</a>
                                     </form>
                                 </div>

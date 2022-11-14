@@ -31,16 +31,23 @@
                                 </th>
                                 <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Equipo:
-                                    <select class="form-control m-bot15" name="area_id">
-                                        <option value="0">Todos</option>
-                                        @if($areas->count() > 0)
-                                            @foreach($areas as $area)
-                                                <option value="{{$area->id}}">{{$area->name}}</option>
-                                            @endForeach
-                                        @else
-                                            No Record Found
-                                        @endif
-                                     </select>
+                                </th>
+                                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <form method="POST" action="{{ route('rrhh.index_news') }}" x-data>
+                                        @csrf
+                                        <input type="text" value="{{ Auth::user()->id }}"                 hidden id="id_user" name="id_user">
+                                        <input type="text" value="{{ Auth::user()['current_team_id'] }}" hidden id="team_id" name="team_id">
+                                        <select class="form-control m-bot15" name="area_id" onchange="this.form.submit()">
+                                            <option value="0" {{ $area_selected == 0 ? 'selected' : ''}} >Todos</option>
+                                            @if($areas->count() > 0)
+                                                @foreach($areas as $area)
+                                                    <option value="{{$area->id}}" {{ $area_selected == $area->id ? 'selected' : ''}} >{{$area->name}}</option>
+                                                @endForeach
+                                            @else
+                                                No Record Found
+                                            @endif
+                                        </select>
+                                    </form>
                                 </th>
                                 <th scope="col" width="100" class="px-6 py-3 bg-gray-50"></th>
                                 <th scope="col" width="100" class="px-6 py-3 bg-gray-50"></th>
@@ -57,6 +64,7 @@
                                             {{ $new->tittle }}
                                         </td>
 
+                                        <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900"></td>
                                         <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900"></td>
 
                                         <td class="px-6 py-3 whitespace-nowrap text-sm font-small">

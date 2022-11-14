@@ -22,77 +22,23 @@ class RrhhController extends Controller
         return view('rrhh.index');
     }
 
-    public function index_news2(Request $request)
-    {
-        //if($request->method() == 'POST') dd($request);
-
-        /*
-            debe saber que teams puede ver el usuario
-            ==
-            si team_id = 0 entonces tiene que buscar todas las novedades de los equipos a los que el usuario pertenezca
-            Si team_id <> 0 entonces solo debe buscar las novedades de el team indicado
-        */
-
-        //$teams = DB::select('select * from users where active = ?', [1])
-
-        $user_id = 1;
-        $team_id = 1;
-
-        if($request->method() == 'POST') {
-            $user_id = $request['id_user'];
-            $team_id = $request['team_id'];
-        }
-
-
-        //dd('user_id: ' . $user_id . ' team_id: ' . $team_id );
-
-        $teams = DB::select('SELECT DISTINCT p.id, p.name, p.user_id FROM (SELECT t.id, t.name, tu.user_id FROM teams t INNER JOIN team_user tu ON t.id = tu.team_id UNION ALL
-        SELECT id, name, user_id FROM teams) p WHERE p.user_id = ?', [$user_id]);
-
-        $queryNews = 'SELECT * FROM news n LEFT JOIN news_teams nt ON n.id = nt.news_id WHERE n.user_id = ?';
-
-        if($request['team_id'] > 0 ) {
-            $queryNews .= ' AND nt.team_id = ?';
-        }else{
-            $queryNews .= ' AND 0 = ?';
-        };
-
-        //if($request->method() == 'POST') dd($queryNews);
-
-        $news = DB::select($queryNews, [$user_id, $team_id]);
-
-
-        //if($request->method() == 'POST') dd($news);
-
-
-        //$news = News::all();
-        //$teams = Team::all();
-        return view('rrhh.news.index', compact('news', 'teams'));
-    }
-
     //-----------------------------------------------------------------INICIO NEWS
     public function index_news(Request $request)
     {
-        //dd($request);
         $team_selected = $request->team_id;
-        //$membership = Membership::where('user_id',$request['id_user'])->get();
-        //$companies = Team::with('team_user','user_id', $request['id_user'])->get();
-        //$companies = Membership::with('team')->where('user_id', $request['id_user'])->get();
-        /*$men = array();
-        for ($i = 0; $i < count(collect($membership)); $i++){
-            $men[] = array($membership[$i]->team_id);
-            if ($i == 0 && $request->team_id == 0) {
-                $team_selected = $membership[$i]->team_id;
-            }
-        }*/
-        //print_r($team_selected);
-        //$companies = Team::whereIn('id', $men)->get();
+        $area_id = $request->area_id;
+        $area_selected = $area_id;
         $company = Team::where('id', $team_selected)->get();
-        //dd($companies);
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        $news = News::all();
-        //dd($areas);
-        return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news'));
+        $query = 'SELECT DISTINCT n.* FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE n.deleted_at IS NULL AND ca.team_id = ?';
+
+        if ($area_id > 0) {
+            $query .= ' AND nt.company_area_id = ?';
+        }else {
+            $query .= ' AND 0 = ?';
+        }
+        $news = DB::select($query, [$team_selected, $area_id]);
+        return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news', 'area_selected'));
     }
 
     public function create_news(Request $request)
@@ -150,22 +96,12 @@ class RrhhController extends Controller
 
     public function edit_news(Request $request)
     {
-        //dd($request);
         $team_selected = $request->team_id;
-        //$user_id = $request->id_user;
-        ////$area_id = $request->area_id;
         $new_id = $request->new_id;
-
-        //$areas = CompanyAreas::where('team_id', $team_selected)->get();
-
         $new = News::where('id', $new_id)->get();
-
         $areas = DB::select('SELECT ca.id area_id, ca.name, 1 AS assigned FROM company_areas ca INNER JOIN news_teams nt ON ca.id = nt.company_area_id WHERE nt.news_id = ? AND ca.team_id = ? AND ca.deleted_at IS NULL
         UNION ALL SELECT ca.id area_id, ca.name, 0 AS assigned FROM company_areas ca WHERE ca.team_id = ? AND ca.deleted_at IS NULL AND NOT EXISTS (SELECT 1 FROM news_teams nt WHERE nt.company_area_id = ca.id AND nt.news_id = ?);',
         [$new_id, $team_selected, $team_selected, $new_id]);
-
-        //dd($areas);
-
         return view('rrhh.news.edit_news', compact('areas', 'new'));
     }
 
@@ -224,24 +160,9 @@ class RrhhController extends Controller
     //-----------------------------------------------------------------INICIO GROUPS
     public function index_group(Request $request)
     {
-        //dd($request);
         $team_selected = $request->team_id;
-        //$membership = Membership::where('user_id',$request['id_user'])->get();
-        //$companies = Team::with('team_user','user_id', $request['id_user'])->get();
-        //$companies = Membership::with('team')->where('user_id', $request['id_user'])->get();
-        /*$men = array();
-        for ($i = 0; $i < count(collect($membership)); $i++){
-            $men[] = array($membership[$i]->team_id);
-            if ($i == 0 && $request->team_id == 0) {
-                $team_selected = $membership[$i]->team_id;
-            }
-        }*/
-        //print_r($team_selected);
-        //$companies = Team::whereIn('id', $men)->get();
         $company = Team::where('id', $team_selected)->get();
-        //dd($companies);
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        //dd($areas);
         return view('rrhh.employees.index', compact('company', 'team_selected', 'areas'));
     }
 
@@ -249,23 +170,14 @@ class RrhhController extends Controller
     {
         $team_selected = $request->team_id;
         $user_id = $request->id_user;
-        /*$membership = Membership::where('user_id',$request['id_user'])->get();
-        $men = array();
-        for ($i = 0; $i < count(collect($membership)); $i++){
-            $men[] = array($membership[$i]->team_id);
-        }*/
-
         $company = Team::where('id', $team_selected)->get();
-
         $users = DB::select('SELECT u.id AS user_id, u.name, t.id AS team_id FROM users u INNER JOIN team_user tu ON u.id = tu.user_id INNER JOIN teams t ON tu.team_id = t.id
         WHERE t.id = ? AND u.id != ?;', [$team_selected, $user_id]);
-
         return view('rrhh.employees.create_group', compact('company', 'users'));
     }
 
     public function store_group(Request $request)
     {
-
         try {
            $area = CompanyAreas::create([
                 'name' => $request['area_name'],
@@ -301,7 +213,6 @@ class RrhhController extends Controller
         $company = Team::where('id', $team_selected)->get();
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
         return view('rrhh.employees.index', compact('company', 'team_selected', 'areas'));
-
     }
 
     public function edit_group(Request $request)

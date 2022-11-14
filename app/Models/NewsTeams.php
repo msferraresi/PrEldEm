@@ -21,5 +21,4 @@ class NewsTeams extends Model
     {
         return LogOptions::defaults()->useLogName('news')->logOnly(['news_id', 'company_area_id']);
     }
-
 }

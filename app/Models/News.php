@@ -24,5 +24,4 @@ class News extends Model
     {
         return LogOptions::defaults()->useLogName('news')->logOnly(['tittle', 'description', 'user_id']);
     }
-
 }

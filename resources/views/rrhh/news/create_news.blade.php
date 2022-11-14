@@ -10,6 +10,7 @@
                                 @csrf
                                 <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
                                 <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                <input type="text" value="0" hidden id="area_id" name="area_id">
                                 <a href="{{ route('rrhh.index_news') }}"  @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
                             </form>
 
@@ -22,7 +23,7 @@
                                     <div class="block mb-8">
                                         <div class="px-4 py-5 bg-white sm:p-6">
                                             <label for="tittle" class="block font-medium text-sm text-gray-700">Titulo</label>
-                                            <input type="text" name="tittle" id="tittle" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
+                                            <input type="text" maxlength="70" name="tittle" id="tittle" type="text" class="form-input rounded-md shadow-sm mt-1 block w-full"
                                                 value="{{ old('tittle', '') }}" />
                                             @error('tittle')
                                                 <p class="text-sm text-red-600">{{ $message }}</p>
