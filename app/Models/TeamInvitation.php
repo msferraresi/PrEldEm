@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Laravel\Jetstream\Jetstream;
 use Laravel\Jetstream\TeamInvitation as JetstreamTeamInvitation;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TeamInvitation extends JetstreamTeamInvitation
 {
+    use LogsActivity;
     /**
      * The attributes that are mass assignable.
      *
@@ -25,5 +28,10 @@ class TeamInvitation extends JetstreamTeamInvitation
     public function team()
     {
         return $this->belongsTo(Jetstream::teamModel());
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->useLogName('team_invitation')->logOnly(['email', 'role']);
     }
 }

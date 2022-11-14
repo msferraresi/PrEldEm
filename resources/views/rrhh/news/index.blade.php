@@ -15,6 +15,30 @@
                         </div>
                         <br>
                     @endcan
+
+                    <div class="block mb-8">
+                        <form method="POST" action="{{ route('rrhh.index_news') }}" x-data>
+                            @csrf
+                            <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
+                            <select style="width:250px;" class="inline-flex items-center py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  focus:outline-none focus:border-gray-900 disabled:opacity-25 transition" name="team_id">
+                                <option value="0">Todos</option>
+                                @if(count(collect($teams)) > 0)
+                                    @foreach($teams as $team)
+                                        <option value="{{$team->id}}">{{$team->name}}</option>
+                                    @endForeach
+                                @else
+                                    No Record Found
+                                @endif
+                            </select>
+
+                            <x-jet-nav-link href="{{ route('rrhh.index_news') }}"
+                                     @click.prevent="$root.submit();">
+                               Buscar
+                            </x-jet-nav-link>
+                        </form>
+                    </div>
+                    <br>
+
                     <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                         <table class="min-w-full divide-y divide-gray-200 w-full">
                             <thead>
@@ -34,25 +58,28 @@
                             </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($news as $new)
+                            @for ($i = 0; $i < count(collect($news)); $i++)
+                                @php
+                                    $n_id = $news[$i]->id;
+                                @endphp
                                 <tr>
                                     <td hidden>
-                                        {{ $new->id }}
+                                        {{ $news[$i]->id }}
                                     </td>
 
                                     <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $new->tittle }}
+                                        {{ $news[$i]->tittle }}
                                     </td>
                                     <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $new->description }}
+                                        {{ $news[$i]->description }}
                                     </td>
 
                                     <td class="px-6 py-3 whitespace-nowrap text-sm font-small">
                                         @can('news.edit')
-                                            <a href="{{ route('news.edit', $new->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Editar</a>
+                                            <a href="@php echo "e(route('news.edit'," . $n_id ." ))"; @endphp" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Editar</a>
                                         @endcan
                                         @can('news.destroy')
-                                            <form class="inline-block" action="{{ route('news.destroy', $new->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                            <form class="inline-block" action="@php echo "e(route('news.destroy'," . $n_id ." ))"; @endphp" method="POST" onsubmit="return confirm('¿Esta seguro que desea eliminar esta novedad?');">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <input type="submit" class="inline-flex items-center px-4 py-2 bg-red-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition" value="Borrar">
@@ -60,7 +87,8 @@
                                         @endcan
                                     </td>
                                 </tr>
-                            @endforeach
+
+                            @endfor
                             </tbody>
                         </table>
                     </div>

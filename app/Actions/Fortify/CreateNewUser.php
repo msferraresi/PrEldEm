@@ -2,6 +2,8 @@
 
 namespace App\Actions\Fortify;
 
+use App\Models\Membership;
+use App\Models\TeamInvitation;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -24,34 +26,38 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'exists:team_invitations,email'],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
         return DB::transaction(function () use ($input) {
-            return tap(User::create([
+            $teamInvitation = TeamInvitation::select('role')->where('email', $input['email'])->first();
+
+            if($teamInvitation == null) $teamInvitation = ['role'=>'colaborator'];
+
+            return tap(User::create(
+                [
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'password' => Hash::make($input['password']),
-            ])->assignRole('COLABORADOR'), function (User $user) {
-                //$this->createTeam($user);
-            });
+                ])->assignRole($teamInvitation['role']), function (User $user) {
+                    $team = TeamInvitation::where('email', $user['email'])->first();
+                    if($team != null ) $this->acceptInvitation($user, $team);
+                }
+            );
         });
     }
 
-    /**
-     * Create a personal team for the user.
-     *
-     * @param  \App\Models\User  $user
-     * @return void
-     */
-    protected function createTeam(User $user)
+    protected function acceptInvitation(User $user, TeamInvitation $team)
     {
-        $user->ownedTeams()->save(Team::forceCreate([
-            'user_id' => $user->id,
-            'name' => explode(' ', $user->name, 2)[0]."'s Team",
-            'personal_team' => true,
-        ]));
+        $user->current_team_id = $team['team_id'];
+        $user->save();
+        Membership::create([
+            'team_id' => $team['team_id'],
+            'user_id' => $user['id'],
+            'role' => $team['role'],
+        ]);
+        $team->delete();
     }
 }

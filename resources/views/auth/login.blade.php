@@ -39,11 +39,6 @@
                     </a>
                 @endif
 
-                <a href="{{ route('register') }}"
-                    class="btn ml-4 text-sm text-gray-700 dark:text-gray-500 underline">
-                    {{ __('Registrar') }}
-                </a>
-
                 <x-jet-button class="ml-4">
                     {{ __('Ingresar') }}
                 </x-jet-button>

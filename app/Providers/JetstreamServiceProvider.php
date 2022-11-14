@@ -58,11 +58,11 @@ class JetstreamServiceProvider extends ServiceProvider
             'delete',
         ])->description('El usuario ADMINISTRADO puede realizar cualquier accion.');
 
-        Jetstream::role('editor', 'Editor', [
+        Jetstream::role('rrhh', 'Recursos Humanos', [
             'read',
             'create',
             'update',
-        ])->description('El usuario EDITOR tiene la habilidad para leer, crear y modificar equipos.');
+        ])->description('El usuario RECURSOS HUMANOS tiene la habilidad para leer, crear y modificar equipos.');
 
         Jetstream::role('colaborator', 'Colaborador', [
             'read',

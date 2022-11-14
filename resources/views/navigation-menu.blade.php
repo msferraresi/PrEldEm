@@ -63,6 +63,25 @@ $classes = ($active ?? false)
                                             <input type="submit" value="{{ $nav_link['name'] }}"/>
                                         </form>
                                     </x-jet-nav-link>
+
+                                    <x-jet-nav-link href="{{ $nav_link['route'] }}" :active="$nav_link['active']" @click.prevent="$root.submit();">
+                                        <form method="post" action="{{ $nav_link['route'] }}" x-data >
+                                            @csrf
+                                            <input type="text" value="{{Auth::user()->id}}" hidden id="id" name="id">
+
+                                        </form>
+                                        {{ $nav_link['name'] }}
+                                    </x-jet-nav-link>
+
+                                    <form method="POST" action="{{ $nav_link['route'] }}" x-data>
+                                        @csrf
+                                        <input type="text" value="{{Auth::user()->id}}" hidden id="id" name="id">
+                                        <x-jet-nav-link href="{{ $nav_link['route'] }}"
+                                                 @click.prevent="$root.submit();">
+                                            {{ $nav_link['name'] }}
+                                        </x-jet-nav-link>
+                                    </form>
+
                                 @endcan
                                 @break
                                 @case(route('documentacion'))
@@ -147,9 +166,11 @@ $classes = ($active ?? false)
 
 
                             @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                                <x-jet-dropdown-link href="{{ route('teams.create') }}">
-                                    {{ __('Crear nuevo Equipo') }}
-                                </x-jet-dropdown-link>
+                                @unlessrole('COLABORADOR')
+                                    <x-jet-dropdown-link href="{{ route('teams.create') }}">
+                                        {{ __('Crear nuevo Equipo') }}
+                                    </x-jet-dropdown-link>
+                                @endunlessrole
                             @endcan
 
                             <div class="block px-4 py-2 text-xs text-gray-400">

@@ -10,4 +10,5 @@ class TypePaycheck extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
 }

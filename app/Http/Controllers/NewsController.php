@@ -20,12 +20,24 @@ class NewsController extends Controller
 
     public function store(Request $request)
     {
-
-        News::create([
-            'tittle' => $request['tittle'],
-            'description' => $request['description'],
-        ]);
-
+        //dd($request);
+        try {
+            News::create([
+                'tittle' => $request['tittle'],
+                'description' => $request['description'],
+                'user_id' => $request['id_user'],
+                'all_groups' => $request['all_group']
+            ]);
+            //activity('news')->withProperties(['class' => __CLASS__,'function' => __METHOD__])->log('SUCCESS');
+        } catch (\Exception $e) {
+            activity()
+                ->withProperties(['tittle' => $request['tittle'],
+                                  'description' => $request['description'],
+                                  'class' => __CLASS__,
+                                  'function' => __METHOD__
+                                  ])
+                ->log('ERROR: ' . $e->getMessage());
+        }
         return redirect()->route('rrhh.index_news');
     }
 

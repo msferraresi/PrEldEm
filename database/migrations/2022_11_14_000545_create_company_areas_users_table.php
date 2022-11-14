@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('news', function (Blueprint $table) {
+        Schema::create('company_areas_users', function (Blueprint $table) {
             $table->id();
-            $table->string('tittle');
-            $table->text('description');
+            $table->unsignedBigInteger('company_area_id');
+            $table->foreign('company_area_id')->references('id')->on('company_areas')->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->boolean('all_groups')->default(true);
-            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('news');
+        Schema::dropIfExists('company_areas_users');
     }
 };
