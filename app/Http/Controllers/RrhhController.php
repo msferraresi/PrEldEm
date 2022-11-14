@@ -22,7 +22,7 @@ class RrhhController extends Controller
         return view('rrhh.index');
     }
 
-    public function index_news(Request $request)
+    public function index_news2(Request $request)
     {
         //if($request->method() == 'POST') dd($request);
 
@@ -70,8 +70,159 @@ class RrhhController extends Controller
         return view('rrhh.news.index', compact('news', 'teams'));
     }
 
+    //-----------------------------------------------------------------INICIO NEWS
+    public function index_news(Request $request)
+    {
+        //dd($request);
+        $team_selected = $request->team_id;
+        //$membership = Membership::where('user_id',$request['id_user'])->get();
+        //$companies = Team::with('team_user','user_id', $request['id_user'])->get();
+        //$companies = Membership::with('team')->where('user_id', $request['id_user'])->get();
+        /*$men = array();
+        for ($i = 0; $i < count(collect($membership)); $i++){
+            $men[] = array($membership[$i]->team_id);
+            if ($i == 0 && $request->team_id == 0) {
+                $team_selected = $membership[$i]->team_id;
+            }
+        }*/
+        //print_r($team_selected);
+        //$companies = Team::whereIn('id', $men)->get();
+        $company = Team::where('id', $team_selected)->get();
+        //dd($companies);
+        $areas = CompanyAreas::where('team_id', $team_selected)->get();
+        $news = News::all();
+        //dd($areas);
+        return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news'));
+    }
 
-    public function index_employees(Request $request)
+    public function create_news(Request $request)
+    {
+        $team_selected = $request->team_id;
+        /*$membership = Membership::where('user_id',$request['id_user'])->get();
+        $men = array();
+        for ($i = 0; $i < count(collect($membership)); $i++){
+            $men[] = array($membership[$i]->team_id);
+        }*/
+
+        $company = Team::where('id', $team_selected)->get();
+        $areas = CompanyAreas::where('team_id', $team_selected)->get();
+
+        return view('rrhh.news.create_news', compact('company', 'areas'));
+    }
+
+    public function store_news(Request $request)
+    {
+
+        try {
+            $new = News::create([
+                'tittle' => $request['tittle'],
+                'description' => $request['description'],
+                'user_id' => $request['id_user'],
+            ]);
+
+            if($_POST) {
+                foreach ($_POST as $clave=>$valor) {
+                    if(str_contains($clave, 'chk')){
+                        $area_users = NewsTeams::create([
+                            'news_id' => $new['id'],
+                            'company_area_id' => $valor,
+                        ]);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            activity()
+                ->withProperties(['tittle' => $request['tittle'],
+                                  'description' => $request['description'],
+                                  'class' => __CLASS__,
+                                  'function' => __METHOD__
+                                  ])
+                ->log('ERROR: ' . $e->getMessage());
+        }
+
+        $team_selected = $request['team_id'];
+        $company = Team::where('id', $team_selected)->get();
+        $areas = CompanyAreas::where('team_id', $team_selected)->get();
+        $news = News::all();
+        return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news'));
+
+    }
+
+    public function edit_news(Request $request)
+    {
+        //dd($request);
+        $team_selected = $request->team_id;
+        //$user_id = $request->id_user;
+        ////$area_id = $request->area_id;
+        $new_id = $request->new_id;
+
+        //$areas = CompanyAreas::where('team_id', $team_selected)->get();
+
+        $new = News::where('id', $new_id)->get();
+
+        $areas = DB::select('SELECT ca.id area_id, ca.name, 1 AS assigned FROM company_areas ca INNER JOIN news_teams nt ON ca.id = nt.company_area_id WHERE nt.news_id = ? AND ca.team_id = ? AND ca.deleted_at IS NULL
+        UNION ALL SELECT ca.id area_id, ca.name, 0 AS assigned FROM company_areas ca WHERE ca.team_id = ? AND ca.deleted_at IS NULL AND NOT EXISTS (SELECT 1 FROM news_teams nt WHERE nt.company_area_id = ca.id AND nt.news_id = ?);',
+        [$new_id, $team_selected, $team_selected, $new_id]);
+
+        //dd($areas);
+
+        return view('rrhh.news.edit_news', compact('areas', 'new'));
+    }
+
+    public function update_news(Request $request)
+    {
+        try {
+
+            $news = News::where('id', $request['new_id'])->update([
+                'tittle' => $request['tittle'],
+                'description' => $request['description'],
+                'user_id' => $request['id_user'],
+             ]);
+
+             NewsTeams::where('news_id', $request['new_id'])->delete();
+
+             if($_POST) {
+                foreach ($_POST as $clave=>$valor) {
+                    if(str_contains($clave, 'chk')){
+                        $area_users = NewsTeams::create([
+                            'news_id' => $request['new_id'],
+                            'company_area_id' => $valor,
+                        ]);
+                    }
+                }
+            }
+         } catch (\Exception $e) {
+             activity()
+                 ->withProperties(['tittle' => $request['tittle'],
+                                   'description' => $request['description'],
+                                   'class' => __CLASS__,
+                                   'function' => __METHOD__
+                                   ])
+                 ->log('ERROR: ' . $e->getMessage());
+         }
+
+         $team_selected = $request['team_id'];
+         $company = Team::where('id', $team_selected)->get();
+         $areas = CompanyAreas::where('team_id', $team_selected)->get();
+         $news = News::all();
+         return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news'));
+    }
+
+    public function destroy_news(Request $request)
+    {
+        NewsTeams::where('news_id', $request['new_id'])->delete();
+        News::where('id', $request['new_id'])->delete();
+
+        $team_selected = $request['team_id'];
+        $company = Team::where('id', $team_selected)->get();
+        $areas = CompanyAreas::where('team_id', $team_selected)->get();
+        $news = News::all();
+        return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news'));
+    }
+    //-----------------------------------------------------------------FIN NEWS
+
+    //-----------------------------------------------------------------INICIO GROUPS
+    public function index_group(Request $request)
     {
         //dd($request);
         $team_selected = $request->team_id;
@@ -213,6 +364,7 @@ class RrhhController extends Controller
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
         return view('rrhh.employees.index', compact('company', 'team_selected', 'areas'));
     }
+    //-----------------------------------------------------------------FIN GROUPS
 
 
 

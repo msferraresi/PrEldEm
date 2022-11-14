@@ -6,11 +6,11 @@
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                         <div class="block mb-8">
-                            <form method="POST" action="{{ route('rrhh.index_employees') }}" x-data>
+                            <form method="POST" action="{{ route('rrhh.index_group') }}" x-data>
                                 @csrf
                                 <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
                                 <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
-                                <a href="{{ route('rrhh.index_employees') }}"  @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
+                                <a href="{{ route('rrhh.index_group') }}"  @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
                             </form>
 
                         </div>

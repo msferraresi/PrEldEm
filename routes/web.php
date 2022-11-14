@@ -32,14 +32,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified', 
     //RRHH Controller Gral
     Route::resource('rrhh', RrhhController::class);
     //RRHH Controller NOTICES
-    Route::get('/rrhh.index_news', [RrhhController::class, 'index_news'])->name('rrhh.index_news');
     Route::post('/rrhh.index_news', [RrhhController::class, 'index_news'])->name('rrhh.index_news');
-    //RRHH Controller PAYCHECKS
-    Route::get('/rrhh.index_paychecks', [RrhhController::class, 'index_paychecks'])->name('rrhh.index_paychecks');
-    //RRHH Controller DOCUMENTS
-    Route::get('/rrhh.index_documents', [RrhhController::class, 'index_documents'])->name('rrhh.index_documents');
+    Route::post('/rrhh.create_news', [RrhhController::class, 'create_news'])->name('rrhh.create_news');
+    Route::post('/rrhh.store_news', [RrhhController::class, 'store_news'])->name('rrhh.store_news');
+    Route::post('/rrhh.edit_news', [RrhhController::class, 'edit_news'])->name('rrhh.edit_news');
+    Route::post('/rrhh.update_news', [RrhhController::class, 'update_news'])->name('rrhh.update_news');
+    Route::post('/rrhh.destroy_news', [RrhhController::class, 'destroy_news'])->name('rrhh.destroy_news');
     //RRHH Controller GROUPS
-    Route::post('/rrhh.index_employees', [RrhhController::class, 'index_employees'])->name('rrhh.index_employees');
+    Route::post('/rrhh.index_group', [RrhhController::class, 'index_group'])->name('rrhh.index_group');
     Route::post('/rrhh.create_group', [RrhhController::class, 'create_group'])->name('rrhh.create_group');
     Route::post('/rrhh.store_group', [RrhhController::class, 'store_group'])->name('rrhh.store_group');
     Route::post('/rrhh.edit_group', [RrhhController::class, 'edit_group'])->name('rrhh.edit_group');
@@ -47,7 +47,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified', 
     Route::post('/rrhh.destroy_group', [RrhhController::class, 'destroy_group'])->name('rrhh.destroy_group');
     //RRHH Controller ACTIVITY
     Route::get('/rrhh.index_activities', [RrhhController::class, 'index_activities'])->name('rrhh.index_activities');
-
+    //RRHH Controller PAYCHECKS
+    Route::get('/rrhh.index_paychecks', [RrhhController::class, 'index_paychecks'])->name('rrhh.index_paychecks');
+    //RRHH Controller DOCUMENTS
+    Route::get('/rrhh.index_documents', [RrhhController::class, 'index_documents'])->name('rrhh.index_documents');
 
 
 

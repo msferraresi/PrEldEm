@@ -26,7 +26,6 @@ class NewsController extends Controller
                 'tittle' => $request['tittle'],
                 'description' => $request['description'],
                 'user_id' => $request['id_user'],
-                'all_groups' => $request['all_group']
             ]);
             //activity('news')->withProperties(['class' => __CLASS__,'function' => __METHOD__])->log('SUCCESS');
         } catch (\Exception $e) {
