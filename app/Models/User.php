@@ -39,6 +39,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'identification',
     ];
 
     /**
@@ -74,6 +75,6 @@ class User extends Authenticatable
 
     public function getActivitylogOptions(): LogOptions
     {
-        return LogOptions::defaults()->useLogName('user')->logOnly(['name', 'email', 'profile_photo_url', 'password', 'two_factor_confirmed_at' ]);
+        return LogOptions::defaults()->useLogName('user')->logOnly(['name', 'email', 'profile_photo_url', 'password', 'two_factor_confirmed_at', 'identification' ]);
     }
 }

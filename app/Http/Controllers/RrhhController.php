@@ -163,7 +163,7 @@ class RrhhController extends Controller
         $team_selected = $request->team_id;
         $company = Team::where('id', $team_selected)->get();
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        return view('rrhh.employees.index', compact('company', 'team_selected', 'areas'));
+        return view('rrhh.groups.index', compact('company', 'team_selected', 'areas'));
     }
 
     public function create_group(Request $request)
@@ -173,7 +173,7 @@ class RrhhController extends Controller
         $company = Team::where('id', $team_selected)->get();
         $users = DB::select('SELECT u.id AS user_id, u.name, t.id AS team_id FROM users u INNER JOIN team_user tu ON u.id = tu.user_id INNER JOIN teams t ON tu.team_id = t.id
         WHERE t.id = ? AND u.id != ?;', [$team_selected, $user_id]);
-        return view('rrhh.employees.create_group', compact('company', 'users'));
+        return view('rrhh.groups.create_group', compact('company', 'users'));
     }
 
     public function store_group(Request $request)
@@ -212,7 +212,7 @@ class RrhhController extends Controller
         $team_selected = $request['team_id'];
         $company = Team::where('id', $team_selected)->get();
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        return view('rrhh.employees.index', compact('company', 'team_selected', 'areas'));
+        return view('rrhh.groups.index', compact('company', 'team_selected', 'areas'));
     }
 
     public function edit_group(Request $request)
@@ -226,7 +226,7 @@ class RrhhController extends Controller
         UNION SELECT u.id user_id, u.name, 0 AS assigned FROM users u WHERE u.id != 1 AND NOT exists (SELECT 1 FROM company_areas_users cau WHERE cau.deleted_at IS NULL AND cau.user_id = u.id and company_area_id = ?)) Q
         ORDER BY Q.user_id;', [$area_id, $area_id]);
 
-        return view('rrhh.employees.edit_group', compact('company', 'users', 'area'));
+        return view('rrhh.groups.edit_group', compact('company', 'users', 'area'));
     }
 
     public function update_group(Request $request)
@@ -262,7 +262,7 @@ class RrhhController extends Controller
          $team_selected = $request['team_id'];
          $company = Team::where('id', $team_selected)->get();
          $areas = CompanyAreas::where('team_id', $team_selected)->get();
-         return view('rrhh.employees.index', compact('company', 'team_selected', 'areas'));
+         return view('rrhh.groups.index', compact('company', 'team_selected', 'areas'));
     }
 
     public function destroy_group(Request $request)
@@ -273,7 +273,7 @@ class RrhhController extends Controller
         $team_selected = $request['team_id'];
         $company = Team::where('id', $team_selected)->get();
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        return view('rrhh.employees.index', compact('company', 'team_selected', 'areas'));
+        return view('rrhh.groups.index', compact('company', 'team_selected', 'areas'));
     }
     //-----------------------------------------------------------------FIN GROUPS
 
@@ -309,11 +309,6 @@ class RrhhController extends Controller
     }
 
 
-    public function index_activities()
-    {
-        $news = News::all();
-        return view('rrhh.activities.index', compact('news'));
-    }
 
     /**
      * Display the specified resource.

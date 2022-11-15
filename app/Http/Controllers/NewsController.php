@@ -4,66 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\News;
 use Illuminate\Http\Request;
+use DB;
 
 class NewsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $news = News::all();
-        return view('news.index', compact('news'));
-    }
 
-    public function create()
-    {
-        return view('rrhh.news.create');
-    }
 
-    public function store(Request $request)
-    {
-        //dd($request);
-        try {
-            News::create([
-                'tittle' => $request['tittle'],
-                'description' => $request['description'],
-                'user_id' => $request['id_user'],
-            ]);
-            //activity('news')->withProperties(['class' => __CLASS__,'function' => __METHOD__])->log('SUCCESS');
-        } catch (\Exception $e) {
-            activity()
-                ->withProperties(['tittle' => $request['tittle'],
-                                  'description' => $request['description'],
-                                  'class' => __CLASS__,
-                                  'function' => __METHOD__
-                                  ])
-                ->log('ERROR: ' . $e->getMessage());
+        $team_selected = $request->team_id;
+        $id_user = $request->id_user;
+
+
+        //dd($team_selected .' --- '. $id_user);
+
+        $area_id = 0;
+        $query = 'SELECT DISTINCT n.id, n.tittle, SUBSTRING(n.description ,1,100) description, n.user_id FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE n.deleted_at IS NULL AND ca.team_id = ?';
+
+        if ($area_id > 0) {
+            $query .= ' AND nt.company_area_id = ?';
+        }else {
+            $query .= ' AND 0 = ?';
         }
-        return redirect()->route('rrhh.index_news');
+
+        $news = DB::select($query, [$team_selected, $area_id]);
+        return view('news.index', compact('news'));
     }
 
     public function show(News $news)
     {
         return view('news.show', compact('news'));
-    }
-
-    public function edit(News $news)
-    {
-        return view('rrhh.news.edit', compact('news'));
-    }
-
-    public function update(Request $request, News $news)
-    {
-        $news->update([
-            'tittle' => $request['tittle'],
-            'description' => $request['description'],
-        ]);
-
-        return redirect()->route('rrhh.index_news');
-    }
-
-    public function destroy(News $news)
-    {
-        $news->delete();
-
-        return redirect()->route('rrhh.index_news');
     }
 }
