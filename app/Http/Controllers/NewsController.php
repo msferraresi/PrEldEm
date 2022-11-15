@@ -27,9 +27,15 @@ class NewsController extends Controller
 
         $news = DB::select($query, [$team_selected, $id_user]);
 
-        //dd($team_selected, $id_user, $news);
+        if (count(collect($news)) > 0) {
+            return view('news.index', compact('news'));
+        }else {
+            return view('news.index', [
+                'errorCode' => 400,
+                'errorMessage' => 'No tiene equipo asociado.',
+            ]);
+        }
 
-        return view('news.index', compact('news'));
     }
 
     public function show(Request $request)
