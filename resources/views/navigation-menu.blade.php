@@ -49,25 +49,25 @@
                             @if (Laravel\Jetstream\Jetstream::hasTeamFeatures() && Auth::user()->isMemberOfATeam())
                             <div class="border-t border-gray-100"></div>
                             <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Equipos') }}
+                                {{ __('Empresas') }}
                             </div>
 
                             <!-- Team Settings -->
                             <x-jet-dropdown-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}">
-                                {{ __('Ajustes de Equipo') }}
+                                {{ __('Ajustes de Empresa') }}
                             </x-jet-dropdown-link>
 
 
                             @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                                @unlessrole('COLABORADOR')
+                                @role('admin')
                                     <x-jet-dropdown-link href="{{ route('teams.create') }}">
-                                        {{ __('Crear nuevo Equipo') }}
+                                        {{ __('Crear nueva Empresa') }}
                                     </x-jet-dropdown-link>
-                                @endunlessrole
+                                @endrole
                             @endcan
 
                             <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Seleccionar Equipo') }}
+                                {{ __('Seleccionar Empresa') }}
                             </div>
 
                             @foreach (Auth::user()->allTeams() as $team)

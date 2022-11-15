@@ -1,5 +1,5 @@
 <div>
-    @if (Gate::check('addTeamMember', $team))
+    @unlessrole('colaborator')
         <x-jet-section-border />
 
         <!-- Add Team Member -->
@@ -72,9 +72,9 @@
                 </x-slot>
             </x-jet-form-section>
         </div>
-    @endif
+    @endrole
 
-    @if ($team->teamInvitations->isNotEmpty() && Gate::check('addTeamMember', $team))
+    @if ($team->teamInvitations->isNotEmpty())
         <x-jet-section-border />
 
         <!-- Team Member Invitations -->
@@ -95,13 +95,13 @@
                                 <div class="text-gray-600">{{ $invitation->email }}</div>
 
                                 <div class="flex items-center">
-                                    @if (Gate::check('removeTeamMember', $team))
+                                    @unlessrole('colaborator')
                                         <!-- Cancel Team Invitation -->
                                         <button class="cursor-pointer ml-6 text-sm text-red-500 focus:outline-none"
                                                             wire:click="cancelTeamInvitation({{ $invitation->id }})">
                                             {{ __('Cancel') }}
                                         </button>
-                                    @endif
+                                    @endunlessrole
                                 </div>
                             </div>
                         @endforeach
