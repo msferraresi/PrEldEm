@@ -15,24 +15,27 @@ class NewsController extends Controller
         $team_selected = $request->team_id;
         $id_user = $request->id_user;
 
+        $query = 'SELECT DISTINCT n.id, n.tittle, SUBSTRING(n.description ,1,50) description, n.user_id, ca.name, DATE_FORMAT(n.created_at,\'%d-%m-%Y\') created_at
+        FROM news n
+        INNER JOIN news_teams nt ON n.id = nt.news_id
+        INNER JOIN company_areas ca ON nt.company_area_id = ca.id
+        INNER JOIN company_areas_users cau ON ca.id = cau.company_area_id
+        INNER JOIN users u ON cau.user_id = u.id
+        WHERE n.deleted_at IS NULL AND ca.team_id = ? AND u.id = ?
+        ORDER BY DATE_FORMAT(n.created_at,\'%d-%m-%Y\') DESC, ca.name;';
 
-        //dd($team_selected .' --- '. $id_user);
 
-        $area_id = 0;
-        $query = 'SELECT DISTINCT n.id, n.tittle, SUBSTRING(n.description ,1,100) description, n.user_id FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE n.deleted_at IS NULL AND ca.team_id = ?';
+        $news = DB::select($query, [$team_selected, $id_user]);
 
-        if ($area_id > 0) {
-            $query .= ' AND nt.company_area_id = ?';
-        }else {
-            $query .= ' AND 0 = ?';
-        }
+        //dd($team_selected, $id_user, $news);
 
-        $news = DB::select($query, [$team_selected, $area_id]);
         return view('news.index', compact('news'));
     }
 
-    public function show(News $news)
+    public function show(Request $request)
     {
-        return view('news.show', compact('news'));
+        $new = News::where('id', $request->new_id)->get();
+        //dd($new);
+        return view('news.show', compact('new'));
     }
 }

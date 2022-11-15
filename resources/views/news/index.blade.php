@@ -14,6 +14,8 @@
                                 <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Descripcion
                                 </th>
+                                <th scope="col" width="200" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Equipo</th>
+                                <th scope="col" width="200" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
                                 <th scope="col" width="200" class="px-6 py-3 bg-gray-50"></th>
                             </tr>
                             </thead>
@@ -23,8 +25,16 @@
                                     <td hidden>{{ $new->id }}</td>
                                     <td scope="col" class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{{ $new->tittle }}</td>
                                     <td class="px-6 py-3 whitespace-nowrap text-sm font-small">{{ $new->description . '...'}}</td>
+                                    <td scope="col" class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{{ $new->name }}</td>
+                                    <td scope="col" class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{{ $new->created_at }}</td>
                                     <td class="px-6 py-3 whitespace-nowrap text-sm font-small">
-                                        <a href="{{ route('news.show', $new->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Ver</a>
+                                        <form method="POST" action="{{ route('news.show') }}" x-data>
+                                            @csrf
+                                            <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
+                                            <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                            <input type="text" value="{{$new->id}}" hidden id="new_id" name="new_id">
+                                            <a href="{{ route('news.show')   }}" @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2   bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Leer</a>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
