@@ -63,11 +63,13 @@
                             <div class="flex items-center">
                                 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-8 h-8 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">
-                                    <form method="POST" action="{{ route('rrhh.index_group') }}" x-data>
+                                    <form method="POST" action="{{ route('rrhh.index_employees') }}" x-data>
                                         @csrf
                                         <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
                                         <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
-                                        <a href="{{ route('rrhh.index_group') }}" @click.prevent="$root.submit();">Gestion de Empleados</a>
+                                        <input type="text" value="0" hidden id="area_id" name="area_id">
+                                        <input type="text" value="all" hidden id="role_name" name="role_name">
+                                        <a href="{{ route('rrhh.index_employees') }}" @click.prevent="$root.submit();">Gestion de Empleados</a>
                                     </form>
                                 </div>
                             </div>

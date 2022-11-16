@@ -25,12 +25,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified', 
     Route::resource('news', NewsController::class);
     Route::post('/news.index', [NewsController::class, 'index'])->name('news.index');
     Route::post('/news.show', [NewsController::class, 'show'])->name('news.show');
-
     //PAYCHECK Controller
     Route::post('paychecks.index', [PaycheckController::class, 'index'])->name('paychecks.index');
     Route::post('paychecks.show', [PaycheckController::class, 'show'])->name('paychecks.show');
     Route::resource('paychecks', PaycheckController::class, ['except' => ['index','show']]);
-
     //RRHH Controller Gral
     Route::resource('rrhh', RrhhController::class);
     //RRHH Controller NOTICES
@@ -47,42 +45,19 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified', 
     Route::post('/rrhh.edit_group', [RrhhController::class, 'edit_group'])->name('rrhh.edit_group');
     Route::post('/rrhh.update_group', [RrhhController::class, 'update_group'])->name('rrhh.update_group');
     Route::post('/rrhh.destroy_group', [RrhhController::class, 'destroy_group'])->name('rrhh.destroy_group');
+    //RRHH Controller EMPLOYEES
+    Route::post('/rrhh.index_employees', [RrhhController::class, 'index_employees'])->name('rrhh.index_employees');
+    Route::post('/rrhh.edit_employee', [RrhhController::class, 'edit_employee'])->name('rrhh.edit_employee');
+    Route::post('/rrhh.update_employee', [RrhhController::class, 'update_employee'])->name('rrhh.update_employee');
+    Route::post('/rrhh.destroy_employee', [RrhhController::class, 'destroy_employee'])->name('rrhh.destroy_employee');
 
     //RRHH Controller PAYCHECKS
     Route::get('/rrhh.index_paychecks', [RrhhController::class, 'index_paychecks'])->name('rrhh.index_paychecks');
     //RRHH Controller DOCUMENTS
     Route::get('/rrhh.index_documents', [RrhhController::class, 'index_documents'])->name('rrhh.index_documents');
-
-
-
     //NOTICE Cotroller
     Route::resource('admin', AdminController::class);
     //RRHH Controller ACTIVITY
     Route::post('/admin.index_activities', [AdminController::class, 'index_activities'])->name('admin.index_activities');
 
-    //Route::get('/paychecks/index/{id}', [PaycheckController::class, 'index'])->name('paychecks.index');
-    //Route::get('/paychecks/{id}',[PaycheckController::class,'index'])->middleware('auth','user')->name('paychecks.index');
-    /*Route::get('/paychecks?id={id}', function ($id) {
-       dd($id);
-    })->name('paychecks.index');
-    Route::get('/paychecks.show', [PaycheckController::class, 'show'])->name('paychecks.show');*/
-    //Route::get('/news', [NewsController::class, 'index'])->name('news');
-    //Route::get('/news.create', [NewsController::class, 'create'])->name('news.create');
-    //Route::get('/news.show', [NewsController::class, 'show'])->name('news.show');
-    //Route::get('/news.edit', [NewsController::class, 'edit'])->name('news.edit');
-
-    //Route::delete('/news.show', [NewsController::class, 'show'])->name('news.show');
-
-
-
-
-
-
-
-
-    Route::get('/recibos', [NewsController::class, 'index'])->name('recibos');
-    Route::get('/documentacion', [NewsController::class, 'index'])->name('documentacion');
-    Route::get('/licencias', [NewsController::class, 'index'])->name('licencias');
-    //Route::get('/rrhh', [NewsController::class, 'index'])->name('rrhh');
-    Route::get('/administracion', [NewsController::class, 'index'])->name('administracion');
 });

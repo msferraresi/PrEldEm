@@ -1,4 +1,3 @@
-
 <x-app-layout>
     @can('rrhh.create')
         <div class="max-w-10xl mx-auto py-5">

@@ -5,12 +5,26 @@
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     <div class="block mb-8">
                         @can('rrhh.create')
-                            <form method="POST" action="{{ route('rrhh.create_news') }}" x-data>
+                            <form method="POST" action="{{ route('rrhh.index_employees') }}" x-data>
                                 @csrf
                                 <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
                                 <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
-                                <a href="{{ route('rrhh.index') }}" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
-                                <a href="{{ route('rrhh.create_news') }}" @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase  hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Agregar Novedad</a>
+                                 <a href="{{ route('rrhh.index') }}" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
+
+                                 <label for="area_id" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Equipo:</label>
+                                 <select class="form-control m-bot15" name="area_id" onchange="this.form.submit()">
+                                    <option value="0" {{ $area_selected == 0 ? 'selected' : ''}} >Todos</option>
+                                    @foreach($areas as $area)
+                                        <option value="{{$area->id}}" {{ $area_selected == $area->id ? 'selected' : ''}} >{{$area->name}}</option>
+                                    @endForeach
+                                </select>
+                                <label for="role_name" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Rol:</label>
+                                <select class="form-control m-bot15" name="role_name" onchange="this.form.submit()">
+                                    <option value="all" {{ $role_selected == 'all' ? 'selected' : ''}} >Todos</option>
+                                    @foreach($roles as $rol)
+                                        <option value="{{$rol->name}}" {{ $role_selected == $rol->name ? 'selected' : ''}} >{{$rol->name}}</option>
+                                    @endForeach
+                                </select>
                             </form>
                         @endcan
                     </div>
@@ -22,65 +36,54 @@
                             <tr>
                                 <th hidden>ID</th>
                                 <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Empresa: <b>{{$company[0]->name}}</b> - Novedades:
+                                    Empresa: <b>{{$company[0]->name}}</b> - Empleado:
                                 </th>
                                 <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Equipo:
+                                    Equipo/s
                                 </th>
                                 <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <form method="POST" action="{{ route('rrhh.index_news') }}" x-data>
-                                        @csrf
-                                        <input type="text" value="{{ Auth::user()->id }}"                 hidden id="id_user" name="id_user">
-                                        <input type="text" value="{{ Auth::user()['current_team_id'] }}" hidden id="team_id" name="team_id">
-                                        <select class="form-control m-bot15" name="area_id" onchange="this.form.submit()">
-                                            <option value="0" {{ $area_selected == 0 ? 'selected' : ''}} >Todos</option>
-                                            @if($areas->count() > 0)
-                                                @foreach($areas as $area)
-                                                    <option value="{{$area->id}}" {{ $area_selected == $area->id ? 'selected' : ''}} >{{$area->name}}</option>
-                                                @endForeach
-                                            @else
-                                                No Record Found
-                                            @endif
-                                        </select>
-                                    </form>
+                                    Rol
                                 </th>
-                                <th scope="col" width="100" class="px-6 py-3 bg-gray-50"></th>
-                                <th scope="col" width="100" class="px-6 py-3 bg-gray-50"></th>
+                                <th scope="col" width="100" class="px-6 py-3 bg-gray-50">:</th>
+                                <th scope="col" width="100" class="px-6 py-3 bg-gray-50">
+                                </th>
                             </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($news as $new)
+                                @foreach ($employees as $employee)
                                     <tr>
                                         <td hidden>
-                                            {{ $new->id }}
+                                            {{ $employee->id }}
                                         </td>
 
                                         <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $new->tittle }}
+                                            {{ $employee->name }}
                                         </td>
 
-                                        <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{{ $new->equipo }}</td>
-                                        <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900"></td>
+                                        <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{{$employee->teams}}</td>
+                                        <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{{$employee->role}}</td>
 
                                         <td class="px-6 py-3 whitespace-nowrap text-sm font-small">
                                             @can('rrhh.edit')
-                                                <form method="POST" action="{{ route('rrhh.edit_news') }}" x-data>
+                                                <form method="POST" action="{{ route('rrhh.edit_employee') }}" x-data>
                                                     @csrf
                                                     <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
                                                     <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
-                                                    <input type="text" value="{{$new->id}}" hidden id="new_id" name="new_id">
-                                                    <a href="{{ route('rrhh.edit_news')   }}" @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2   bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Editar</a>
+                                                    <input type="text" value="{{$employee->id}}" hidden id="employee_id" name="employee_id">
+                                                    <a href="{{ route('rrhh.edit_employee')   }}" @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2   bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Editar</a>
                                                 </form>
                                             @endcan
                                         </td>
                                         <td class="px-6 py-3 whitespace-nowrap text-sm font-small">
                                             @can('rrhh.destroy')
-                                                <form class="inline-block" action="{{ route('rrhh.destroy_news') }}" method="POST" onsubmit="return confirm('¿Seguro que desea eliminar?');">
+                                                <form class="inline-block" action="{{ route('rrhh.destroy_employee') }}" method="POST" onsubmit="return confirm('¿Seguro que desea eliminar?');">
                                                     <input type="hidden" name="_method" value="POST">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    <input type="text" value="{{$new->id}}" hidden id="new_id" name="new_id">
+                                                    <input type="text" value="{{$employee->id}}" hidden id="employee_id" name="employee_id">
                                                     <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
                                                     <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                                    <input type="text" value="0" hidden id="area_id" name="area_id">
+                                                    <input type="text" value="all" hidden id="role_name" name="role_name">
                                                     <input type="submit" class="inline-flex items-center px-4 py-2 bg-red-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition" value="Borrar">
                                                 </form>
                                             @endcan

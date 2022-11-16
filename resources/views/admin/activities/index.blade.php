@@ -7,7 +7,9 @@
                         <form method="POST" action="{{ route('admin.index_activities') }}" x-data>
                             @csrf
                              <a href="{{ route('rrhh.index') }}" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
-                            <select class="form-control m-bot15" name="log_names" onchange="this.form.submit()">
+
+                             <label for="log_names" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Tipo Log:</label>
+                             <select class="form-control m-bot15" name="log_names" onchange="this.form.submit()">
                                 <option value="all" {{ $log_selected == 'all' ? 'selected' : ''}} >Todos</option>
                                 @foreach($log_names as $lg)
                                     <option value="{{$lg->log_name}}" {{ $log_selected == $lg->log_name ? 'selected' : ''}} >{{$lg->log_name}}</option>
