@@ -33,13 +33,16 @@ class RrhhController extends Controller
         $area_selected = $area_id;
         $company = Team::where('id', $team_selected)->get();
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        $query = 'SELECT DISTINCT n.*, ca.name equipo FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE ca.deleted_at IS NULL AND n.deleted_at IS NULL AND ca.team_id = ?';
+        $query = 'SELECT n.id, n.tittle, n.description, n.user_id, n.deleted_at, n.created_at, n.updated_at, group_concat(ca.name) equipo FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE ca.deleted_at IS NULL AND n.deleted_at IS NULL AND ca.team_id = ?';
 
         if ($area_id > 0) {
             $query .= ' AND nt.company_area_id = ?';
         }else {
             $query .= ' AND 0 = ?';
         }
+
+        $query .= ' GROUP BY n.id, n.tittle, n.description, n.user_id, n.deleted_at, n.created_at, n.updated_at';
+
         $news = DB::select($query, [$team_selected, $area_id]);
         return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news', 'area_selected'));
     }
@@ -89,11 +92,23 @@ class RrhhController extends Controller
                 ->log('ERROR: ' . $e->getMessage());
         }
 
-        $team_selected = $request['team_id'];
+
+        $team_selected = $request->team_id;
+        $area_id = 0;
+        $area_selected = $area_id;
         $company = Team::where('id', $team_selected)->get();
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        $news = News::all();
-        $area_selected = 0;
+        $query = 'SELECT n.id, n.tittle, n.description, n.user_id, n.deleted_at, n.created_at, n.updated_at, group_concat(ca.name) equipo FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE ca.deleted_at IS NULL AND n.deleted_at IS NULL AND ca.team_id = ?';
+
+        if ($area_id > 0) {
+            $query .= ' AND nt.company_area_id = ?';
+        }else {
+            $query .= ' AND 0 = ?';
+        }
+
+        $query .= ' GROUP BY n.id, n.tittle, n.description, n.user_id, n.deleted_at, n.created_at, n.updated_at';
+
+        $news = DB::select($query, [$team_selected, $area_id]);
         return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news', 'area_selected'));
 
     }
@@ -141,24 +156,46 @@ class RrhhController extends Controller
                  ->log('ERROR: ' . $e->getMessage());
          }
 
-         $team_selected = $request['team_id'];
+         $team_selected = $request->team_id;
+         $area_id = 0;
+         $area_selected = $area_id;
          $company = Team::where('id', $team_selected)->get();
          $areas = CompanyAreas::where('team_id', $team_selected)->get();
-         $news = News::all();
-         $area_selected = 0;
+         $query = 'SELECT n.id, n.tittle, n.description, n.user_id, n.deleted_at, n.created_at, n.updated_at, group_concat(ca.name) equipo FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE ca.deleted_at IS NULL AND n.deleted_at IS NULL AND ca.team_id = ?';
+
+         if ($area_id > 0) {
+             $query .= ' AND nt.company_area_id = ?';
+         }else {
+             $query .= ' AND 0 = ?';
+         }
+
+         $query .= ' GROUP BY n.id, n.tittle, n.description, n.user_id, n.deleted_at, n.created_at, n.updated_at';
+
+         $news = DB::select($query, [$team_selected, $area_id]);
          return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news', 'area_selected'));
     }
 
     public function destroy_news(Request $request)
     {
-        NewsTeams::where('news_id', $request['new_id'])->delete();
         News::where('id', $request['new_id'])->delete();
 
-        $team_selected = $request['team_id'];
+        $team_selected = $request->team_id;
+        $area_id = 0;
+        $area_selected = $area_id;
         $company = Team::where('id', $team_selected)->get();
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        $news = News::all();
-        return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news'));
+        $query = 'SELECT n.id, n.tittle, n.description, n.user_id, n.deleted_at, n.created_at, n.updated_at, group_concat(ca.name) equipo FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE ca.deleted_at IS NULL AND n.deleted_at IS NULL AND ca.team_id = ?';
+
+        if ($area_id > 0) {
+            $query .= ' AND nt.company_area_id = ?';
+        }else {
+            $query .= ' AND 0 = ?';
+        }
+
+        $query .= ' GROUP BY n.id, n.tittle, n.description, n.user_id, n.deleted_at, n.created_at, n.updated_at';
+
+        $news = DB::select($query, [$team_selected, $area_id]);
+        return view('rrhh.news.index', compact('company', 'team_selected', 'areas', 'news', 'area_selected'));
     }
     //-----------------------------------------------------------------FIN NEWS
 
@@ -227,8 +264,8 @@ class RrhhController extends Controller
         $area_id = $request->area_id;
         $company = Team::where('id', $team_selected)->get();
         $area = CompanyAreas::where('id', $area_id)->get();
-        $users = DB::select('SELECT * FROM (SELECT u.id user_id, u.name, 1 AS assigned FROM users u INNER JOIN company_areas_users cau ON u.id = cau.user_id WHERE u.deleted_at IS NULL AND cau.deleted_at IS NULL AND cau.company_area_id = ?
-        UNION SELECT u.id user_id, u.name, 0 AS assigned FROM users u WHERE u.deleted_at IS NULL AND u.id != 1 AND NOT exists (SELECT 1 FROM company_areas_users cau WHERE cau.deleted_at IS NULL AND cau.user_id = u.id and company_area_id = ?)) Q
+        $users = DB::select('SELECT * FROM (SELECT u.id user_id, u.name, 1 AS assigned FROM users u INNER JOIN company_areas_users cau ON u.id = cau.user_id WHERE u.deleted_at IS NULL AND cau.company_area_id = ?
+        UNION SELECT u.id user_id, u.name, 0 AS assigned FROM users u WHERE u.deleted_at IS NULL AND u.id != 1 AND NOT exists (SELECT 1 FROM company_areas_users cau WHERE cau.user_id = u.id and company_area_id = ?)) Q
         ORDER BY Q.user_id;', [$area_id, $area_id]);
 
         return view('rrhh.groups.edit_group', compact('company', 'users', 'area'));
@@ -335,9 +372,9 @@ class RrhhController extends Controller
         SELECT r.*, 1 AS assigned FROM roles r INNER JOIN model_has_roles mhr ON r.id = mhr.role_id WHERE mhr.model_id = ?) q WHERE q.id >= ?;'
         , [$employee_id, $employee_id, $role_loged[0]->id]);
 
-        $areas = DB::select('SELECT ca.*, 0 AS assigned FROM company_areas ca WHERE ca.deleted_at IS NULL AND ca.team_id = ? AND NOT EXISTS ( SELECT 1 FROM company_areas_users cau WHERE ca.id = cau.company_area_id AND cau.deleted_at IS NULL  AND cau.user_id = ?)
+        $areas = DB::select('SELECT ca.*, 0 AS assigned FROM company_areas ca WHERE ca.deleted_at IS NULL AND ca.team_id = ? AND NOT EXISTS ( SELECT 1 FROM company_areas_users cau WHERE ca.id = cau.company_area_id AND cau.user_id = ?)
         UNION ALL
-        SELECT ca.*, 1 AS assigned FROM company_areas ca INNER JOIN company_areas_users cau ON ca.id = cau.company_area_id WHERE ca.deleted_at IS NULL AND cau.deleted_at IS NULL AND ca.team_id = ? AND cau.user_id = ?;'
+        SELECT ca.*, 1 AS assigned FROM company_areas ca INNER JOIN company_areas_users cau ON ca.id = cau.company_area_id WHERE ca.deleted_at IS NULL  AND ca.team_id = ? AND cau.user_id = ?;'
         , [$team_selected, $employee_id, $team_selected, $employee_id]);
 
         return view('rrhh.employees.edit_employee', compact('user', 'roles', 'areas'));
