@@ -3,31 +3,38 @@
         <div class="flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div class="block mb-8">
-                        @can('rrhh.create')
-                            <form method="POST" action="{{ route('rrhh.index_employees') }}" x-data>
-                                @csrf
-                                <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
-                                <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
-                                 <a href="{{ route('rrhh.index') }}" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
-
-                                 <label for="area_id" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Equipo:</label>
-                                 <select class="form-control m-bot15" name="area_id" onchange="this.form.submit()">
-                                    <option value="0" {{ $area_selected == 0 ? 'selected' : ''}} >Todos</option>
-                                    @foreach($areas as $area)
-                                        <option value="{{$area->id}}" {{ $area_selected == $area->id ? 'selected' : ''}} >{{$area->name}}</option>
-                                    @endForeach
-                                </select>
-                                <label for="role_name" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Rol:</label>
-                                <select class="form-control m-bot15" name="role_name" onchange="this.form.submit()">
-                                    <option value="all" {{ $role_selected == 'all' ? 'selected' : ''}} >Todos</option>
-                                    @foreach($roles as $rol)
-                                        <option value="{{$rol->name}}" {{ $role_selected == $rol->name ? 'selected' : ''}} >{{$rol->name}}</option>
-                                    @endForeach
-                                </select>
-                            </form>
-                        @endcan
-                    </div>
+                    @can('rrhh.create')
+                        <div class="block mb-8">
+                            <ul class="flex flex-row mt-0 mr-6 space-x-8 text-sm font-medium">
+                                <li>
+                                    <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
+                                    <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                    <a href="{{ route('rrhh.index') }}" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
+                                </li>
+                                <li>
+                                    <form method="POST" action="{{ route('rrhh.index_employees') }}" x-data>
+                                        @csrf
+                                        <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
+                                        <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                        <label for="area_id" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Equipo:</label>
+                                        <select class="form-control m-bot15" name="area_id" onchange="this.form.submit()">
+                                        <option value="0" {{ $area_selected == 0 ? 'selected' : ''}} >Todos</option>
+                                        @foreach($areas as $area)
+                                            <option value="{{$area->id}}" {{ $area_selected == $area->id ? 'selected' : ''}} >{{$area->name}}</option>
+                                        @endForeach
+                                        </select>
+                                        <label for="role_name" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Rol:</label>
+                                        <select class="form-control m-bot15" name="role_name" onchange="this.form.submit()">
+                                            <option value="all" {{ $role_selected == 'all' ? 'selected' : ''}} >Todos</option>
+                                            @foreach($roles as $rol)
+                                                <option value="{{$rol->name}}" {{ $role_selected == $rol->name ? 'selected' : ''}} >{{$rol->name}}</option>
+                                            @endForeach
+                                        </select>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @endcan
                     <br>
                     <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
 

@@ -20,17 +20,20 @@
                                 @csrf
                                 <div class="shadow overflow-hidden sm:rounded-md">
                                     <div class="block mb-8">
-                                        <div class="px-4 py-5 bg-white ">
-                                            <label for="company_name" class="font-medium text-sm text-gray-700">Empresa:</label>
-                                            <input type="text" name="area_name" disabled id="area_name" type="text" class="form-input rounded-md shadow-sm mt-1"
-                                                value="{{  $company[0]->name  }}" />
-                                            <label for="area_name" class="font-medium text-sm text-gray-700">Area:</label>
-                                            <input type="text" name="area_name" id="area_name" type="text" class="form-input rounded-md shadow-sm mt-1"
-                                                value="{{ old('area_name', '') }}" />
-                                            @error('area_name')
-                                                <p class="text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
-                                        </div>
+                                        <ul class="flex flex-row mt-0 mr-6 space-x-8 text-sm font-medium">
+                                            <li>
+                                                <label for="company_name" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Empresa:</label>
+                                                <input type="text" name="area_name" disabled id="area_name" type="text" class="form-input rounded-md shadow-sm mt-1"value="{{  $company[0]->name  }}" />
+                                            </li>
+                                            <li>
+                                                <label for="area_name" class="px-6 font-medium text-gray-500 uppercase tracking-wider">Equipo:</label>
+                                                <input type="text" name="area_name" id="area_name" type="text" class="form-input rounded-md shadow-sm mt-1"
+                                                    value="{{ old('area_name', '') }}" />
+                                                @error('area_name')
+                                                    <p class="text-sm text-red-600">{{ $message }}</p>
+                                                @enderror
+                                            </li>
+                                        </ul>
                                     </div>
                                     <div class="block mb-8">
                                         <table class="min-w-full divide-y divide-gray-200 w-full">

@@ -3,34 +3,36 @@
         <div class="flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div class="block mb-8">
-                        @can('rrhh.create')
-                            <form method="POST" action="{{ route('rrhh.create_group') }}" x-data>
-                                @csrf
-                                <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
-                                <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
-                                <a href="{{ route('rrhh.index') }}" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
-                                <a href="{{ route('rrhh.create_group') }}" @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase  hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Agregar area</a>
-                            </form>
-                        @endcan
-                    </div>
+                    @can('rrhh.create')
+                        <div class="block mb-8">
+                            <ul class="flex flex-row mt-0 mr-6 space-x-8 text-sm font-medium">
+                                <li>
+                                    <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
+                                    <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                    <a href="{{ route('rrhh.index') }}" class="inline-flex items-center px-4 py-2  bg-gray-200   border border-transparent rounded-md font-semibold text-xs text-black uppercase  hover:bg-gray-400 active:bg-gray-900 focus:outline-none focus:border-gray-900 disabled:opacity-25 transition">Volver</a>
+                                </li>
+                                <li>
+                                    <form method="POST" action="{{ route('rrhh.create_group') }}" x-data>
+                                        @csrf
+                                        <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
+                                        <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                        <a href="{{ route('rrhh.create_group') }}" @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase  hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Agregar equipo</a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @endcan
                     <br>
                     <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                         <table class="min-w-full divide-y divide-gray-200 w-full">
                             <thead>
                             <tr>
-                                <th hidden>
-                                    ID
-                                </th>
+                                <th hidden>ID</th>
                                 <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Empresa: <b>{{$company[0]->name}}</b> - Area:
+                                    Empresa: <b>{{$company[0]->name}}</b> - Equipo:
                                 </th>
-                                <th scope="col" width="100" class="px-6 py-3 bg-gray-50">
-
-                                </th>
-                                <th scope="col" width="100" class="px-6 py-3 bg-gray-50">
-
-                                </th>
+                                <th scope="col" width="100" class="px-6 py-3 bg-gray-50"></th>
+                                <th scope="col" width="100" class="px-6 py-3 bg-gray-50"></th>
                             </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
