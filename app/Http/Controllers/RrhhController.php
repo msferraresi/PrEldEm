@@ -33,7 +33,7 @@ class RrhhController extends Controller
         $area_selected = $area_id;
         $company = Team::where('id', $team_selected)->get();
         $areas = CompanyAreas::where('team_id', $team_selected)->get();
-        $query = 'SELECT DISTINCT n.*, ca.name equipo FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE n.deleted_at IS NULL AND ca.team_id = ?';
+        $query = 'SELECT DISTINCT n.*, ca.name equipo FROM news n INNER JOIN news_teams nt ON n.id = nt.news_id INNER JOIN company_areas ca ON nt.company_area_id = ca.id WHERE ca.deleted_at IS NULL AND n.deleted_at IS NULL AND ca.team_id = ?';
 
         if ($area_id > 0) {
             $query .= ' AND nt.company_area_id = ?';
@@ -177,7 +177,7 @@ class RrhhController extends Controller
         $user_id = $request->id_user;
         $company = Team::where('id', $team_selected)->get();
         $users = DB::select('SELECT u.id AS user_id, u.name, t.id AS team_id FROM users u INNER JOIN team_user tu ON u.id = tu.user_id INNER JOIN teams t ON tu.team_id = t.id
-        WHERE t.id = ? AND u.id != ?;', [$team_selected, $user_id]);
+        WHERE u.deleted_at IS NULL AND t.id = ? AND u.id != ?;', [$team_selected, $user_id]);
         return view('rrhh.groups.create_group', compact('company', 'users'));
     }
 
@@ -227,8 +227,8 @@ class RrhhController extends Controller
         $area_id = $request->area_id;
         $company = Team::where('id', $team_selected)->get();
         $area = CompanyAreas::where('id', $area_id)->get();
-        $users = DB::select('SELECT * FROM (SELECT u.id user_id, u.name, 1 AS assigned FROM users u INNER JOIN company_areas_users cau ON u.id = cau.user_id WHERE cau.deleted_at IS NULL AND cau.company_area_id = ?
-        UNION SELECT u.id user_id, u.name, 0 AS assigned FROM users u WHERE u.id != 1 AND NOT exists (SELECT 1 FROM company_areas_users cau WHERE cau.deleted_at IS NULL AND cau.user_id = u.id and company_area_id = ?)) Q
+        $users = DB::select('SELECT * FROM (SELECT u.id user_id, u.name, 1 AS assigned FROM users u INNER JOIN company_areas_users cau ON u.id = cau.user_id WHERE u.deleted_at IS NULL AND cau.deleted_at IS NULL AND cau.company_area_id = ?
+        UNION SELECT u.id user_id, u.name, 0 AS assigned FROM users u WHERE u.deleted_at IS NULL AND u.id != 1 AND NOT exists (SELECT 1 FROM company_areas_users cau WHERE cau.deleted_at IS NULL AND cau.user_id = u.id and company_area_id = ?)) Q
         ORDER BY Q.user_id;', [$area_id, $area_id]);
 
         return view('rrhh.groups.edit_group', compact('company', 'users', 'area'));
