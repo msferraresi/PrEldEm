@@ -50,9 +50,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified', 
     Route::post('/rrhh.edit_employee', [RrhhController::class, 'edit_employee'])->name('rrhh.edit_employee');
     Route::post('/rrhh.update_employee', [RrhhController::class, 'update_employee'])->name('rrhh.update_employee');
     Route::post('/rrhh.destroy_employee', [RrhhController::class, 'destroy_employee'])->name('rrhh.destroy_employee');
-
     //RRHH Controller PAYCHECKS
-    Route::get('/rrhh.index_paychecks', [RrhhController::class, 'index_paychecks'])->name('rrhh.index_paychecks');
+    Route::post('/rrhh.index_files', [RrhhController::class, 'index_files'])->name('rrhh.index_files');
+    Route::post('/rrhh.create_file', [RrhhController::class, 'create_file'])->name('rrhh.create_file');
+    Route::post('/rrhh.store_file', [RrhhController::class, 'store_file'])->name('rrhh.store_file');
+    Route::post('/rrhh.destroy_file', [RrhhController::class, 'destroy_file'])->name('rrhh.destroy_file');
+
+
+
     //RRHH Controller DOCUMENTS
     Route::get('/rrhh.index_documents', [RrhhController::class, 'index_documents'])->name('rrhh.index_documents');
     //NOTICE Cotroller

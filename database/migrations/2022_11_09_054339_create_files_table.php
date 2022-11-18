@@ -20,8 +20,11 @@ return new class extends Migration
             $table->integer('year');
             $table->unsignedBigInteger('type_file_id');
             $table->foreign('type_file_id')->references('id')->on('type_files')->onDelete('cascade');
-            $table->string('comments')->nullable();
-            $table->string('other')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('company_id');
+            $table->foreign('company_id')->references('id')->on('teams')->onDelete('cascade');
+            $table->text('comments')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -28,7 +28,7 @@
                                     <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Año
                                     </th>
-                                    <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th hide scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Tipo
                                     </th>
                                     <th scope="col" width="200" class="px-6 py-3 bg-gray-50"></th>
@@ -46,17 +46,21 @@
                                             <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
                                                 {{ $paycheck->year }}
                                             </td>
-                                            <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
+                                            <td  hide class="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
                                                 {{ $paycheck->type_file_id }}
                                             </td>
                                             <td class="px-6 py-3 whitespace-nowrap text-sm font-small">
-                                                <a href="#" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                                                    <form method="post" action="{{ route('paychecks.show') }}">
-                                                        @csrf
-                                                        <input type="text" value="{{$paycheck->id}}" hidden id="id" name="id">
-                                                        <input type="submit" value=" Ver "/>
-                                                    </form>
-                                                </a>
+
+                                                <form method="POST" action="{{ route('paychecks.show') }}" x-data>
+                                                    @csrf
+                                                    <input type="text" value="{{Auth::user()->id}}" hidden id="id_user" name="id_user">
+                                                    <input type="text" value="{{Auth::user()['current_team_id']}}" hidden id="team_id" name="team_id">
+                                                    <input type="text" value="{{$paycheck->path}}" hidden id="path" name="path">
+                                                    <input type="text" value="{{$paycheck->month}}" hidden id="month" name="month">
+                                                    <input type="text" value="{{$paycheck->year}}" hidden id="year" name="year">
+
+                                                    <a href="{{ route('paychecks.show')   }}" @click.prevent="$root.submit();" class="inline-flex items-center px-4 py-2   bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Descargar</a>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach

@@ -36,14 +36,25 @@ class PaycheckController extends Controller
 
     }
 
-    public function show(Paycheck $paycheck)
+    public function show(Request $request)
     {
-        return view('paychecks.show', compact('paycheck'));
+        $file= public_path().$request->path;
+        $headers = [
+            'Content-Type' => 'application/pdf',
+         ];
+
+        return response()->download($file, $request->month.$request->year.time().'.pdf', $headers);
     }
 
     public function edit(Paycheck $paycheck)
     {
+        //$file= $request->path;
+        $file= public_path(). "/img/Logo2.svg";
+        $headers = [
+            'Content-Type' => 'application/pdf',
+         ];
 
+        return response()->download($file, 'filename.pdf', $headers);
     }
 
     public function update(Request $request, Paycheck $paycheck)

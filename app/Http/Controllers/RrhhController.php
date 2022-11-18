@@ -12,6 +12,7 @@ use App\Models\Membership;
 use App\Models\CompanyAreas;
 use App\Models\CompanyAreasUser;
 use App\Models\User;
+use App\Models\Paycheck;
 use DB;
 
 
@@ -489,17 +490,135 @@ class RrhhController extends Controller
     }
     //-----------------------------------------------------------------FIN EMPLOYEES
 
-
-    public function index_paychecks()
+    //-----------------------------------------------------------------INICIO FILES
+    public function index_files(Request $request)
     {
-        $news = News::all();
-        return view('rrhh.paychecks.index', compact('news'));
+        $company_selected = $request->company_id;
+        $user_id = $request->id_user;
+        $type_file_selected = $request->type_file_id;
+
+        $company = Team::where('id', $company_selected)->first();
+        $type_files = TypeFile::all();
+
+        $conditions[] =  ['company_id', $company_selected];
+
+        if($type_file_selected > 0 ) $conditions[] = ['type_file_id', $type_file_selected];
+
+        $files = File::select()->where($conditions)->get();
+
+        return view('rrhh.files.index', compact('company', 'type_files', 'files', 'type_file_selected'));
     }
 
-    public function index_documents()
-    {
-        $news = News::all();
-        return view('rrhh.documents.index', compact('news'));
+    public function create_file(Request $request){
+
+        $company_selected = $request->company_id;
+        $user_id = $request->id_user;
+        $company = Team::where('id', $company_selected)->first();
+        $type_files = TypeFile::all();
+
+        return view('rrhh.files.create_file', compact('company', 'type_files'));
+    }
+
+    public function store_file(Request $request){
+
+        if($request->hasFile('urlpdf')){
+            $file_pdf = $request->file('urlpdf');
+            $file_name = $this->generate_name(30).".".$file_pdf->guessExtension();
+            $file_path = public_path('storage/paychecks/'.$file_name);
+
+            if ($file_pdf->guessExtension()=='pdf') {
+
+                copy($file_pdf, $file_path);
+
+                $result = File::create([
+                    'path' => $file_path,
+                    'month' => $request->month,
+                    'year' => $request->year,
+                    'type_file_id' =>  $request->type_file_id,
+                    'user_id' => $request->id_user,
+                    'company_id'=> $request->company_id,
+                    'comments'=> $request->comments,
+                ]);
+
+                Paycheck::create([
+                    'path' => '/download/paychecks/1979/8752ba4b-3970-4a46-bf22-a6c2f91f5a38.pdf',
+                    'month' => $request->month,
+                    'year' => $request->year,
+                    'type_file_id' =>  $request->type_file_id,
+                    'user_id'=> 2,
+                    'company_id'=> $request->company_id,
+                    'comments'=> $request->comments,
+                ]);
+
+                Paycheck::create([
+                    'path' => '/download/paychecks/1974/d78790ee-90d1-4d8a-a4a5-1c4e679df022.pdf',
+                    'month' => $request->month,
+                    'year' => $request->year,
+                    'type_file_id' =>  $request->type_file_id,
+                    'user_id'=> 3,
+                    'company_id'=> $request->company_id,
+                    'comments'=> $request->comments,
+                ]);
+
+                Paycheck::create([
+                    'path' => '/download/paychecks/1980/0d8db700-559c-4443-b2b7-11f7c699606e.pdf',
+                    'month' => $request->month,
+                    'year' => $request->year,
+                    'type_file_id' =>  $request->type_file_id,
+                    'user_id'=>4,
+                    'company_id'=> $request->company_id,
+                    'comments'=> $request->comments,
+                ]);
+
+
+
+
+
+            }else{
+                dd("No es un pdf");
+            }
+
+            $company_selected = $request->company_id;
+            $user_id = $request->id_user;
+            $type_file_selected = 0;
+
+            $company = Team::where('id', $company_selected)->first();
+            $type_files = TypeFile::all();
+
+            $conditions[] =  ['company_id', $company_selected];
+
+            if($type_file_selected > 0 ) $conditions[] = ['type_file_id', $type_file_selected];
+
+            $files = File::select()->where($conditions)->get();
+
+            return view('rrhh.files.index', compact('company', 'type_files', 'files', 'type_file_selected'));
+        }
+    }
+
+    public function destroy_file(Request $request){
+        $company_selected = $request->company_id;
+        $user_id = $request->id_user;
+        $type_file_selected = 0;
+        $file_id = $request->file_id;
+        File::find($file_id)->delete();
+
+        $company = Team::where('id', $company_selected)->first();
+        $type_files = TypeFile::all();
+
+        $conditions[] =  ['company_id', $company_selected];
+
+        if($type_file_selected > 0 ) $conditions[] = ['type_file_id', $type_file_selected];
+
+        $files = File::select()->where($conditions)->get();
+
+        return view('rrhh.files.index', compact('company', 'type_files', 'files', 'type_file_selected'));
+    }
+
+    //-----------------------------------------------------------------FIN FILES
+
+    private function generate_name($max) {
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        return 'pdf_'.substr(str_shuffle($permitted_chars), 0, $max).time();
     }
 
 }

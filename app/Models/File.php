@@ -19,8 +19,9 @@ class File extends Model
         'month',
         'year',
         'type_file_id',
+        'user_id',
         'comments',
-        'other'
+        'company_id'
     ];
 
     public function getActivitylogOptions(): LogOptions

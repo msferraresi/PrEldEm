@@ -21,6 +21,8 @@ class Paycheck extends Model
         'year',
         'type_file_id',
         'user_id',
+        'company_id',
+        'comments'
     ];
 
 

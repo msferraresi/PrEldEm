@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
             'name' => 'Preldem Manager',
             'email' => 'preldem.manager@gmail.com',
             'password' => bcrypt('Lepo1867'),
+            'identification' => '00000000000'
         ])->assignRole('admin');
     }
 }
